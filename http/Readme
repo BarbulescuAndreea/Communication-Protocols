@@ -1,78 +1,55 @@
-Tema3- Protocoale de Comunicatii 
-Barbulescu Khristine-Andreea 324CD
+Implemented commands:
 
-	Nu am folosit biblioteca JSON, am ales sa prelucrez eu sirurile de caractere de care
-am avut nevoie precum cookie, token, si am formatat eu cand am avut nevoie de exemplu
-in cazul "{username: ..; parola:..}"
-	Am citit de la tastatura toate comenzile folosind fgets sau scanf, am taiat caracterul de newline
-si cu strcmp am veificat ca pentru fiecare comanda data sa se efectueze operatia necesara.
-O comanda scrisa gresit(invalida) este pur si simplu ignorata.
-	Am avut dificultati pentru citirea la add_book fiindca nu imi citea cum trebuie spatiile insa 
-dupa am folosit fgets si o "simulare" de flush cu acel while cu pointer, fiindca sunt pe linux si nu
-mergea direct flush.
-	M-am ajutat in implementarea intregii teme de laboratorul de http, in special de fisierele 
-requests.c, buffer.c, helpers.c, in requests.c am mai modifcat cate ceva de exemplu am adaugat functie
-de post, get cu token care face exact acelasi lucru ca cele simple de get si post dar pe langa,
-introduce si token-ul, si functie de delete in care doar am trimis in loc de "GET", "DELETE" la
-campul de method-name.
-	A fost o tema interesanta, cu exceptia faptului ca uneori cand rulam si ma logam si intram in 
-biblioteca dadea eroare iar alteori nu, insa am rezolvat asta, fiind vina mea ca citeam ceva gresit 
-de la tastatura. In rest o tema foaaarte draguta (many thanks for that ^_^). 
+Register: "username" and "password" are read from the keyboard.
+I made the payload to be able to send it in compute_post_request.
+I read username, password, removed the last character by setting
+the last position in the string with '\0'. I created the payload with the received information
+(username and password) and I created the message with the help of the function "compute_post_
+request", after which I sent it with the "send_to_server" function. I displayed the response because,
+if there is an error, it will be displayed from the server. For the case specified in the statement
+that the username is used, at the end of the server's response, you see "error: The username
+"x" is taken!"}. I chose to display the entire response of the server because I found it helpfull as well
+interesting to see in case of an error, the error code from HTTP1.1
 
-Comenzile:
+Login: It is 90% identical to the register function, only in the case of login
+of a user, I am also interested in the cookie obtained after logging in. Errors are treated again
+in case of error, I don't have to get any cookies. I got the cookie by searching in the answer
+server after the text "Set-Cookie", and then obtained from there.
 
-Register: Se citeste de la tastatura "username" si "parola", se scoate caracterul
-"newline". Am facut payload-ul pentru a l putea trimite in compute_post_request. 
-	Am citit username, password, am eliminat ultimul caracter (newline) setand
-ultima pozitie din string cu '\0'. Am creat payload-ul cu informatia primita
-(username si parola) si am creat mesajul cu ajutorul functiei "compute_post_
-request", dupa care l-am trimis cu functia "send_to_server". Am afisat raspunsul pentru ca, 
-in cazul in care este o eroare, se va afisa de la server. Pentru cazul specificat in enunt
-ca username-ul este folosit, la sfarsitul raspunsului serverului, se vede "error: The username
-"x" is taken!"}. Am ales sa afisez tot raspunsul serverului fiindca mi s a parut helpfull si 
-interesant sa se vada in cazul unei erori, si codul de eroare de la HTTP1.1 
-
-Login: Este identica in proportie de 90% cu functia register, doar ca in cazul de login
-al unui user ma intereseaza si cookie-ul obtinut in urma logarii. Se trateaza erorile, iar 
-in caz de eroare nu mai trebuie sa obtin niciun cookie. Cookie-ul l am luat cautand in raspunsul
-serverului dupa textul "Set-Cookie", si apoi obtinut de acolo.
-
-Logout:
-	Cea mai importanta parte pe langa partea basic de cerere server afisare raspuns inchidere
-conexiune, a fost cea in care la final am facut token si cookie sa fie goale din nou(sa fie NULL),
-pentru ca exact cum se specifica in cerinta temei, sa nu se intample ca un nou client sa aiba 
-drepturi care sa fi ramas de la un client care s a logat precedent. Si in cazul in care un client
-doreste sa se deconecteze dar inca nu s a conectat, va primi mesaj ca trebuie sa se logheze intai.
+Sign out:
+The most important part besides the basic part of request server display response close
+connection, it was the one where at the end I made the token and cookie to be empty again (to be NULL),
+so that exactly as specified in the theme requirement, it does not happen that a new client has
+rights that may have remained from a customer who logged in previously. And if a customer
+wants to disconnect but has not yet connected, he will receive a message that he must log in first.
 
 Enter_library:
-	Pentru accesul la librarie, am verificat ca user-ul sa fie logat, daca nu e, este eroare.
-Daca este logat, poate accesa libraria, am trimis cerere la server cu url-ul specificat, 
-din raspunsul acestuia am prelucrat sir-ul de caractere ca sa obtin token-ul(functia extract
-token).
+For access to the library, I checked that the user is logged in, if not, it's an error.
+If he is logged in, he can access the library, I sent a request to the server with the specified url,
+from his answer I processed the string of characters to obtain the token (extract function
+tokens).
 
-Get_books:
-	Am verificat ca user-ul sa fie logat si sa fie intrat in librarie, altfel se afiseaza mesaj
-de eroare. Daca nu este eroare, atunci am am trimis cerere la server cu url-ul corespunzator, 
-si din raspunsul lui am luat partea care incepe cu cartile(cu strstr dupa "[") si le am afisat.
+get_books:
+I checked that the user is logged in and entered the library, otherwise a message is displayed
+of error. If it is not an error, then I sent a request to the server with the corresponding url,
+and from his answer I took the part that starts with the books (with a str after "[") and displayed them.
 
-Get_book:
-	Am citit cu scanf id-ul de la tastatura, am facut o functie care verifica daca
-id-ul este un numar, nu are alte caractere printre, daca este numar atunci am formatat
-url-ul care sa aiba dupa calea specificata si id-ul cartii, am trimis cerere la server cu token
-de care aveam nevoie, am primit raspuns si am afisat detaliile despre cartea ceruta.
+get_book:
+I read with scanf the id from the keyboard, I made a function that checks if
+the id is a number, it has no other characters among it, if it is a number then I have formatted it
+the url that has the specified path and the id of the book, I sent a request to the server with a token
+that I needed, I received an answer and displayed the details of the requested book.
 
-Add_book:
-	Daca userul nu are acces la librarie, primeste eroare si nu poate adauga carti. Altfel, 
-am citit de la tastatura datele cerute despre cartea ce va fi adaugata, am verificat ca numarul
-de pagini sa fie numar, am construit payload ul cu sprintf, si am trimis post request la server, iar
-in final am afisat raspunsul sau pentru a se vedea ca este "200 OK" adica ca cererea a fost efectuata
-cu succes.
+add_book:
+If the user does not have access to the library, he receives an error and cannot add books. Otherwise,
+I read from the keyboard the required data about the book that will be added, I checked that the number
+of pages to be numbered, I built the payload with sprintf, and I sent the post request to the server, again
+in the end, I displayed his answer to see that it is "200 OK", which means that the request was made
+successfully.
 
 Delete_book:
-	M am folosit de o functie ajutatoare pe care, dupa cum am zis am creat-o in 
-request.c, care face tot ceea ce face cea de get doar ca are "DELETE" la method_name,
-am apelat o in functia delete_book asta fiind cam tot ce am facut. Pe langa asta, 
-am verificat initial bineinteles ca user-ul sa aiba access la biblioteca ca sa poata
-efectua operatia de stergere. 
-
-Exit: efectiv return 0, sa se inchida terminalul de acces la scris comenzi. 
+I used a helper function that, as I said, I created in
+request.c, which does everything the get does, only that it has "DELETE" in the method_name,
+I called it in the delete_book function, that's about all I did. Besides this,
+I initially checked, of course, that the user has access to the library so that he can
+perform the deletion operation.
